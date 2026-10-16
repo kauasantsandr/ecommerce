@@ -6,4 +6,5 @@ export class Produto {
     valor:number=0;
     valorPromo:number=0;
     destaque:number=0;
+    imagem:string="";
 }

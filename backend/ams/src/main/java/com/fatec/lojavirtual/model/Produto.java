@@ -1,6 +1,5 @@
 package com.fatec.ams.model;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +8,7 @@ import jakarta.persistence.Id;
 
 @Entity 
 public class Produto {
-      @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int codigo;
     private String nome;
@@ -18,6 +17,10 @@ public class Produto {
     private double valorPromo;
     private int quantidade;
     private int destaque;
+
+    @Column(length = 255)
+    private String imagem;
+
     public int getCodigo() {
         return codigo;
     }
@@ -60,6 +63,10 @@ public class Produto {
     public void setDestaque(int destaque) {
         this.destaque = destaque;
     }
-    
-
+    public String getImagem() {
+        return imagem;
+    }
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
+    }
 }

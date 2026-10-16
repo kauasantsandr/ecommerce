@@ -29,7 +29,7 @@
         <tr *ngFor="let obj of itens" class="border-t border-zinc-200 align-middle">
           <td class="p-4">
             <div class="flex items-center gap-3">
-              <img src="{{obj.codigo}}.jpg" class="h-16 w-16 rounded-xl object-cover bg-zinc-100" alt="{{obj.nome}}">
+              <img [src]="getImagemUrl(obj.imagem)" class="h-16 w-16 rounded-xl object-cover bg-zinc-100" alt="{{obj.nome}}">
               <div>
                 <div class="font-semibold text-zinc-800">{{obj.nome}}</div>
               </div>

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ClienteService } from '../service/cliente-service';
 import { Cliente } from '../model/cliente';
 
@@ -16,7 +17,7 @@ export class Login {
   senha = '';
   erro = '';
 
-  constructor(private service: ClienteService) {}
+  constructor(private service: ClienteService, private router: Router) {}
 
   ngOnInit() {
     if (typeof localStorage !== 'undefined') {
@@ -28,9 +29,7 @@ export class Login {
 
       const usuarioLogado = localStorage.getItem('usuarioLogado');
       if (usuarioLogado) {
-        if (typeof window !== 'undefined') {
-          window.location.href = 'vitrine';
-        }
+        this.router.navigateByUrl('/');
       }
     }
   }
@@ -56,17 +55,22 @@ export class Login {
         }
 
         if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('jwtToken', token);
-          localStorage.setItem('usuarioLogado', JSON.stringify({
+          const usuarioLogado = {
             usuario: usuario.usuario || usuario.email?.split('@')[0],
             email: usuario.email,
+            role: usuario.role || (usuario.email === 'admin@loja.com' ? 'ADMIN' : 'USER'),
             token,
-          }));
+          };
+
+          localStorage.setItem('jwtToken', token);
+          localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
         }
 
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent('usuarioAtualizado'));
-          window.location.href = 'vitrine';
+          window.location.href = '/';
+        } else {
+          this.router.navigateByUrl('/');
         }
       },
       error: (err) => {

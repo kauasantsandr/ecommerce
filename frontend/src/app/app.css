@@ -1,0 +1,58 @@
+.user-menu {
+  position: absolute;
+  right: 0;
+  top: 3.5rem;
+  z-index: 20;
+  min-width: 11rem;
+  overflow: hidden;
+  border: 1px solid rgba(24, 24, 27, 0.12);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+  padding: 0.4rem;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.96);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.user-menu--open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.user-menu__header {
+  padding: 0.6rem 0.8rem 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #27272a;
+  border-bottom: 1px solid rgba(24, 24, 27, 0.08);
+}
+
+.user-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 0;
+  background: transparent;
+  color: #3f3f46;
+  font-size: 0.875rem;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.user-menu__item:hover {
+  background: rgba(239, 68, 68, 0.06);
+  color: #b91c1c;
+}
+
+.user-menu__item--button {
+  width: 100%;
+  border-top: 1px solid rgba(24, 24, 27, 0.08);
+  margin-top: 0.25rem;
+}

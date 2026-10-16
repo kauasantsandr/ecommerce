@@ -3,6 +3,7 @@ import { Cliente } from '../model/cliente';
 import { ClienteService } from '../service/cliente-service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
  imports: [FormsModule, CommonModule],
@@ -16,7 +17,7 @@ export class Cadastro {
  mensagem = '';
  obj: Cliente = new Cliente();
 
- public constructor(private service: ClienteService) {}
+ public constructor(private service: ClienteService, private router: Router) {}
 
  normalizarUsuario(valor: string): string {
    return valor
@@ -68,8 +69,9 @@ export class Cadastro {
 
        if (typeof window !== 'undefined') {
          window.dispatchEvent(new CustomEvent('usuarioAtualizado'));
-         window.location.href = 'vitrine';
        }
+
+       this.router.navigateByUrl('/');
      },
      error: (err) => {
        this.mensagem = err?.error?.mensagem || 'Ocorreu um erro ao cadastrar. Tente novamente.';

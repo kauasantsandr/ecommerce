@@ -1,5 +1,7 @@
 package com.fatec.ams.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +21,11 @@ public class Cliente {
     private String email;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senha;
+
+    @Column(nullable = false)
+    private String role = "USER";
 
     public int getCodigo() {
         return codigo;
@@ -51,5 +57,13 @@ public class Cliente {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role == null ? "USER" : role.toUpperCase();
     }
 }

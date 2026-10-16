@@ -52,6 +52,7 @@ public class ClienteController {
 
         obj.setUsuario(obj.getUsuario().trim());
         obj.setEmail(obj.getEmail().trim().toLowerCase());
+        obj.setRole(obj.getEmail().equalsIgnoreCase("admin@loja.com") || obj.getUsuario().equalsIgnoreCase("adminloja") ? "ADMIN" : "USER");
         Cliente salvo = bd.save(obj);
 
         String token = jwtUtil.generateToken(salvo.getEmail(), salvo.getUsuario());

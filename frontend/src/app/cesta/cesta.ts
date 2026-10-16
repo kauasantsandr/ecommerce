@@ -14,6 +14,24 @@ export class Cesta {
   valorCesta: number = 0;
   itens: any[] = [];
 
+  private getCarrinhoStorageKey(): string {
+    if (typeof localStorage === 'undefined') {
+      return '';
+    }
+
+    try {
+      const usuario = JSON.parse(localStorage.getItem('usuarioLogado') ?? 'null');
+      if (!usuario) {
+        return '';
+      }
+
+      const identificador = (usuario.email || usuario.usuario || 'guest').trim().toLowerCase();
+      return identificador ? `cesta_${identificador}` : '';
+    } catch {
+      return '';
+    }
+  }
+
   ngOnInit() {
     this.carregarCesta();
   }
@@ -25,9 +43,37 @@ export class Cesta {
       return;
     }
 
-    const dados = localStorage.getItem('cesta');
-    this.itens = dados ? JSON.parse(dados) : [];
+    const storageKey = this.getCarrinhoStorageKey();
+    if (!storageKey) {
+      this.itens = [];
+      this.calculaTotal();
+      return;
+    }
+
+    try {
+      const dados = localStorage.getItem(storageKey);
+      this.itens = dados ? JSON.parse(dados) : [];
+    } catch {
+      this.itens = [];
+    }
+
     this.calculaTotal();
+  }
+
+  getImagemUrl(imagem?: string): string {
+    if (!imagem) {
+      return 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80';
+    }
+
+    if (imagem.startsWith('http://') || imagem.startsWith('https://')) {
+      return imagem;
+    }
+
+    if (imagem.startsWith('/')) {
+      return `http://localhost:8081${imagem}`;
+    }
+
+    return `http://localhost:8081/${imagem}`;
   }
 
   formatarMoeda(valor: number | string | undefined): string {
@@ -51,7 +97,10 @@ export class Cesta {
     this.itens = this.itens.filter((obj) => obj.codigo !== item.codigo);
 
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('cesta', JSON.stringify(this.itens));
+      const storageKey = this.getCarrinhoStorageKey();
+      if (storageKey) {
+        localStorage.setItem(storageKey, JSON.stringify(this.itens));
+      }
     }
 
     if (typeof window !== 'undefined') {
@@ -65,7 +114,10 @@ export class Cesta {
     this.itens = [];
 
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('cesta', JSON.stringify(this.itens));
+      const storageKey = this.getCarrinhoStorageKey();
+      if (storageKey) {
+        localStorage.setItem(storageKey, JSON.stringify(this.itens));
+      }
     }
 
     if (typeof window !== 'undefined') {

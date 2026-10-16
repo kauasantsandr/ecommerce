@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Produto } from '../model/produto';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NavigationEnd, Router } from '@angular/router';
 import { ProdutoService } from '../service/produto-service';
 
 @Component({
@@ -42,16 +43,30 @@ export class Vitrine {
     }
   }
 
-  constructor(private service: ProdutoService) {}
+  constructor(private service: ProdutoService, private router: Router) {}
 
   ngOnInit() {
     this.mensagem = '';
+    this.carregarProdutos();
 
-    this.service.carregarVitrine().subscribe(
-      (value) => (this.lista = value),
-      (error) => (this.mensagem = 'Ocorreu um erro! tente mais tarde!'),
-      () => console.log('Completed')
-    );
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd && this.router.url === '/') {
+        this.carregarProdutos();
+      }
+    });
+  }
+
+  carregarProdutos() {
+    this.service.carregarVitrine().subscribe({
+      next: (value) => {
+        this.lista = Array.isArray(value) ? value : [];
+        this.mensagem = '';
+      },
+      error: () => {
+        this.lista = [];
+        this.mensagem = 'Ocorreu um erro! tente mais tarde!';
+      },
+    });
   }
 
   toggleFilterMenu() {
@@ -63,9 +78,43 @@ export class Vitrine {
     this.showFilterMenu = false;
   }
 
+  private getCarrinhoStorageKey(): string {
+    if (typeof localStorage === 'undefined') {
+      return '';
+    }
+
+    try {
+      const usuario = JSON.parse(localStorage.getItem('usuarioLogado') ?? 'null');
+      if (!usuario) {
+        return '';
+      }
+
+      const identificador = (usuario.email || usuario.usuario || 'guest').trim().toLowerCase();
+      return identificador ? `cesta_${identificador}` : '';
+    } catch {
+      return '';
+    }
+  }
+
   verDetalhe(obj: Produto) {
     localStorage.setItem('produto', JSON.stringify(obj));
-    location.href = 'detalhe';
+    this.router.navigateByUrl('/detalhe');
+  }
+
+  getImagemUrl(imagem?: string): string {
+    if (!imagem) {
+      return 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80';
+    }
+
+    if (imagem.startsWith('http://') || imagem.startsWith('https://')) {
+      return imagem;
+    }
+
+    if (imagem.startsWith('/')) {
+      return `http://localhost:8081${imagem}`;
+    }
+
+    return `http://localhost:8081/${imagem}`;
   }
 
   formatarMoeda(valor: number | string | undefined): string {
@@ -93,30 +142,40 @@ export class Vitrine {
       }
 
       if (typeof window !== 'undefined') {
-        window.location.href = 'login';
+        this.router.navigateByUrl('/login');
       }
       return;
     }
 
-    const itens = JSON.parse(localStorage.getItem('cesta') ?? '[]');
-    const produtoExistente = itens.find((item: any) => item.codigo === obj.codigo);
-
-    if (produtoExistente) {
-      produtoExistente.quantidade += 1;
-      produtoExistente.valorTotal = produtoExistente.quantidade * (produtoExistente.valor || obj.valorPromo || obj.valor);
-    } else {
-      itens.push({
-        codigo: obj.codigo,
-        nome: obj.nome,
-        quantidade: 1,
-        valor: obj.valorPromo > 0 ? obj.valorPromo : obj.valor,
-        valorTotal: obj.valorPromo > 0 ? obj.valorPromo : obj.valor,
-      });
+    const storageKey = this.getCarrinhoStorageKey();
+    if (!storageKey) {
+      return;
     }
 
-    localStorage.setItem('cesta', JSON.stringify(itens));
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('cestaAtualizada'));
+    try {
+      const itens = JSON.parse(localStorage.getItem(storageKey) ?? '[]');
+      const produtoExistente = itens.find((item: any) => item.codigo === obj.codigo);
+
+      if (produtoExistente) {
+        produtoExistente.quantidade += 1;
+        produtoExistente.valorTotal = produtoExistente.quantidade * (produtoExistente.valor || obj.valorPromo || obj.valor);
+      } else {
+        itens.push({
+          codigo: obj.codigo,
+          nome: obj.nome,
+          imagem: obj.imagem ?? '',
+          quantidade: 1,
+          valor: obj.valorPromo > 0 ? obj.valorPromo : obj.valor,
+          valorTotal: obj.valorPromo > 0 ? obj.valorPromo : obj.valor,
+        });
+      }
+
+      localStorage.setItem(storageKey, JSON.stringify(itens));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('cestaAtualizada'));
+      }
+    } catch {
+      return;
     }
 
     this.toastMensagem = `${obj.nome} adicionado ao carrinho.`;

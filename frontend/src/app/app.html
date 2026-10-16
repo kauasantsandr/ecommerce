@@ -22,12 +22,12 @@
           <i class="fa-solid fa-user"></i>
         </button>
 
-        <div *ngIf="showUserMenu" class="absolute right-0 top-14 z-20 w-44 overflow-hidden rounded-2xl border border-zinc-200 bg-white py-2 shadow-xl">
-          <a href="login" class="flex items-center gap-2 px-4 py-2 text-sm text-zinc-700 hover:bg-red-50 hover:text-red-700">
+        <div *ngIf="showUserMenu" class="user-menu user-menu--open">
+          <a [routerLink]="['/login']" class="user-menu__item" (click)="fecharMenuUsuario()">
             <i class="fa-solid fa-right-to-bracket"></i>
             Login
           </a>
-          <a href="cadastro" class="flex items-center gap-2 px-4 py-2 text-sm text-zinc-700 hover:bg-red-50 hover:text-red-700">
+          <a [routerLink]="['/cadastro']" class="user-menu__item" (click)="fecharMenuUsuario()">
             <i class="fa-solid fa-user-plus"></i>
             Cadastro
           </a>
@@ -39,16 +39,32 @@
           <i class="fa-solid fa-user"></i>
         </button>
 
-        <div *ngIf="showUserMenu" class="absolute right-0 top-14 z-20 w-52 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-2 shadow-xl">
-          <div class="px-3 py-2 text-sm font-semibold text-zinc-800">{{ nomeUsuario() }}</div>
-          <button type="button" class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-700 hover:bg-red-50 hover:text-red-700" (click)="sair()">
+        <div *ngIf="showUserMenu" class="user-menu user-menu--open">
+          <div class="user-menu__header">{{ nomeUsuario() }}</div>
+
+          <a *ngIf="isAdmin()" [routerLink]="['/admin-produto']" class="user-menu__item" (click)="fecharMenuUsuario()">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            Cadastrar produto
+          </a>
+
+          <button type="button" class="user-menu__item user-menu__item--button" (click)="sair(); fecharMenuUsuario()">
             <i class="fa-solid fa-right-from-bracket"></i>
             Sair
           </button>
         </div>
       </div>
 
-      <a href="cesta" class="header-cart-btn" aria-label="Carrinho">
+      <a *ngIf="isAdmin()" [routerLink]="['/admin-produto']" class="header-cart-btn" aria-label="Cadastrar produto" (click)="fecharMenuUsuario()">
+        <span class="header-cart-icon">
+          <i class="fa-solid fa-boxes-stacked"></i>
+        </span>
+        <span class="header-cart-text">
+          <span class="header-cart-label">Produto</span>
+          <span class="header-cart-subtitle">Cadastrar</span>
+        </span>
+      </a>
+
+      <a *ngIf="usuarioLogado" [routerLink]="['/cesta']" class="header-cart-btn" aria-label="Carrinho" (click)="fecharMenuUsuario()">
         <span class="header-cart-icon">
           <i class="fa-solid fa-cart-shopping"></i>
         </span>
