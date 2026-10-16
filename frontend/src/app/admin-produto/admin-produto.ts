@@ -10,11 +10,11 @@ import { ProdutoService } from '../service/produto-service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-produto.html',
-  providers: [ProdutoService],
 })
 export class AdminProduto {
   produto = new Produto();
   mensagem = '';
+  imagemSelecionada: File | null = null;
 
   constructor(private service: ProdutoService, public router: Router) {}
 
@@ -39,6 +39,12 @@ export class AdminProduto {
     return usuario?.role === 'ADMIN' || usuario?.email === 'admin@loja.com';
   }
 
+  onImagemSelecionada(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const arquivo = input.files?.[0] ?? null;
+    this.imagemSelecionada = arquivo;
+  }
+
   salvar() {
     if (!this.produto.nome?.trim()) {
       this.mensagem = 'Informe o nome do produto.';
@@ -57,19 +63,22 @@ export class AdminProduto {
       valor: Number(this.produto.valor || 0),
       valorPromo: Number(this.produto.valorPromo || 0),
       quantidade: Number(this.produto.quantidade || 0),
-      destaque: Number(this.produto.destaque || 1),
+      destaque: this.produto.destaque != null ? Number(this.produto.destaque) : 1,
       imagem: this.produto.imagem?.trim() || '/uploads/lenovo.jpg',
     };
 
-    this.service.gravar(payload).subscribe({
+    this.service.gravar(payload, this.imagemSelecionada ?? undefined).subscribe({
       next: () => {
         this.mensagem = 'Produto cadastrado com sucesso!';
         this.produto = new Produto();
         this.produto.destaque = 1;
         this.produto.imagem = '/uploads/lenovo.jpg';
+        this.imagemSelecionada = null;
       },
-      error: () => {
-        this.mensagem = 'Não foi possível cadastrar o produto.';
+      error: (err) => {
+        console.error('Erro ao cadastrar produto:', err);
+        const backendMsg = err?.error?.mensagem;
+        this.mensagem = backendMsg ? `Erro: ${backendMsg}` : 'Não foi possível cadastrar o produto.';
       },
     });
   }

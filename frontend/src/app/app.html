@@ -54,16 +54,6 @@
         </div>
       </div>
 
-      <a *ngIf="isAdmin()" [routerLink]="['/admin-produto']" class="header-cart-btn" aria-label="Cadastrar produto" (click)="fecharMenuUsuario()">
-        <span class="header-cart-icon">
-          <i class="fa-solid fa-boxes-stacked"></i>
-        </span>
-        <span class="header-cart-text">
-          <span class="header-cart-label">Produto</span>
-          <span class="header-cart-subtitle">Cadastrar</span>
-        </span>
-      </a>
-
       <a *ngIf="usuarioLogado" [routerLink]="['/cesta']" class="header-cart-btn" aria-label="Carrinho" (click)="fecharMenuUsuario()">
         <span class="header-cart-icon">
           <i class="fa-solid fa-cart-shopping"></i>

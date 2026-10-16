@@ -41,8 +41,9 @@
 
       <div class="grid gap-4 md:grid-cols-2">
         <label class="block">
-          <span class="mb-2 block text-sm font-medium text-zinc-700">Imagem</span>
-          <input [(ngModel)]="produto.imagem" name="imagem" class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-zinc-800 outline-none focus:border-red-500" placeholder="/uploads/lenovo.jpg" />
+          <span class="mb-2 block text-sm font-medium text-zinc-700">Imagem do produto</span>
+          <input type="file" accept="image/*" (change)="onImagemSelecionada($event)" class="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-zinc-800 outline-none file:mr-3 file:rounded file:border-0 file:bg-red-600 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white focus:border-red-500" />
+          <small *ngIf="imagemSelecionada" class="mt-2 block text-xs text-zinc-500">Arquivo selecionado: {{ imagemSelecionada.name }}</small>
         </label>
 
         <label class="block">

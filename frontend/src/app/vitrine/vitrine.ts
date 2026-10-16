@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { Produto } from '../model/produto';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,6 @@ import { ProdutoService } from '../service/produto-service';
   selector: 'app-vitrine',
   styleUrl: './vitrine.css',
   templateUrl: './vitrine.html',
-  providers: [ProdutoService]
 })
 export class Vitrine {
   lista: Produto[] = [];
@@ -43,7 +42,7 @@ export class Vitrine {
     }
   }
 
-  constructor(private service: ProdutoService, private router: Router) {}
+  constructor(private service: ProdutoService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.mensagem = '';
@@ -61,10 +60,12 @@ export class Vitrine {
       next: (value) => {
         this.lista = Array.isArray(value) ? value : [];
         this.mensagem = '';
+        this.cdr.markForCheck();
       },
       error: () => {
         this.lista = [];
         this.mensagem = 'Ocorreu um erro! tente mais tarde!';
+        this.cdr.markForCheck();
       },
     });
   }
