@@ -29,8 +29,8 @@ VALUES
 
 INSERT INTO produto (nome, descritivo, valor, valor_promo, quantidade, destaque, imagem)
 VALUES
-    ('Notebook Lenovo', 'Notebook Lenovo com desempenho para trabalho, estudo e produtividade.', 4999.00, 4299.00, 10, 1, '/uploads/lenovo.jpg'),
-    ('Teclado Wooting 80HE', 'Teclado mecânico premium com switches analógicos e layout compacto.', 5899.00, 5199.00, 8, 1, '/uploads/wooting.jpg');
+    ('Notebook Lenovo', 'Notebook Lenovo com desempenho para trabalho, estudo e produtividade.', 4999.00, 4299.00, 10, 1, '/uploads/33c7ed96-5891-4c3d-b3a4-ed974cc8b452.png'),
+    ('Teclado Wooting 80HE', 'Teclado mecânico premium com switches analógicos e layout compacto.', 5899.00, 5199.00, 8, 1, 'ba4f13e9-5442-41dc-924f-3fd2ee07437c.png');
 
 COMMIT;
 
