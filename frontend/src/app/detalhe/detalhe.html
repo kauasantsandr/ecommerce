@@ -1,0 +1,95 @@
+<div *ngIf="toastVisivel" class="toast-notification" role="status" aria-live="polite">
+  <div class="toast-icon">
+    <i class="fa-solid fa-check"></i>
+  </div>
+  <div>
+    <div class="toast-title">Produto adicionado</div>
+    <div class="toast-text">{{ toastMensagem }}</div>
+  </div>
+</div>
+
+<div class="mx-auto w-full max-w-[1280px] px-4 py-8">
+  <div *ngIf="mensagem.length>0" class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+    {{mensagem}}
+  </div>
+
+  <div class="detail-shell grid gap-8 border border-zinc-200 bg-white p-6 shadow-sm md:grid-cols-[1.15fr_0.85fr]">
+    <div class="detail-gallery">
+      <div class="detail-image-frame product-image product-image--detail rounded-none bg-zinc-100 p-0">
+        <img src="{{obj.codigo}}.jpg" class="mx-auto max-h-[420px] w-full object-contain" alt="{{obj.nome}}">
+      </div>
+
+      <div class="detail-thumbs mt-4 grid grid-cols-4 gap-3">
+        <div class="thumb-item thumb-item--active">
+          <img src="{{obj.codigo}}.jpg" alt="{{obj.nome}}" />
+        </div>
+        <div class="thumb-item"><img src="{{obj.codigo}}.jpg" alt="{{obj.nome}}" /></div>
+        <div class="thumb-item"><img src="{{obj.codigo}}.jpg" alt="{{obj.nome}}" /></div>
+        <div class="thumb-item"><img src="{{obj.codigo}}.jpg" alt="{{obj.nome}}" /></div>
+      </div>
+    </div>
+
+    <div class="flex flex-col justify-start">
+      <div class="detail-header-row mb-3 flex items-center justify-between gap-3">
+        <div class="inline-flex w-fit items-center rounded-full bg-red-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-red-700">
+          <i class="fa-solid fa-tags mr-2"></i>
+          Destaque
+        </div>
+        <div class="rating-box inline-flex items-center gap-2 text-sm text-zinc-500">
+          <span class="stars">★★★★★</span>
+          <span>0.0</span>
+        </div>
+      </div>
+
+      <h3 class="mb-3 text-3xl font-medium text-zinc-800">{{obj.nome}}</h3>
+      <p class="mb-5 text-base leading-7 text-zinc-600">{{obj.descritivo}}</p>
+
+      <div class="detail-price-wrap mb-5 rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+        <div class="price-stack" *ngIf="obj.valorPromo>0">
+          <div class="price-slab">
+            <span class="price-label">de</span>
+            <span class="old-price">{{ formatarMoeda(obj.valor) }}</span>
+          </div>
+          <div class="price-slab price-slab--main">
+            <span class="price-label">por</span>
+            <span class="new-price detail-price">{{ formatarMoeda(obj.valorPromo) }}</span>
+          </div>
+        </div>
+
+        <div class="price-stack" *ngIf="obj.valorPromo<=0">
+          <div class="price-slab price-slab--main">
+            <span class="price-label">à vista</span>
+            <span class="new-price detail-price">{{ formatarMoeda(obj.valor) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pricing-info mb-5 rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+        <div class="vista-line">
+          <span class="vista-tag">À vista</span>
+          <strong>{{ formatarMoeda(obj.valorPromo > 0 ? obj.valorPromo : obj.valor) }}</strong>
+        </div>
+        <div class="pix-line">15% de desconto no PIX</div>
+        <div class="parcelado-line">
+          <strong>{{ formatarMoeda((obj.valorPromo > 0 ? obj.valorPromo : obj.valor) / 8) }}</strong>
+          <span>em até 8x sem juros</span>
+        </div>
+      </div>
+
+      <div *ngIf="obj.quantidade==0" class="mb-5 inline-flex items-center rounded-full bg-zinc-100 px-3 py-2 text-sm font-semibold text-zinc-600">
+        <i class="fa-solid fa-circle-exclamation mr-2"></i>
+        Sem estoque
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3" *ngIf="obj.quantidade>0">
+        <button type="button" class="buy-btn inline-flex flex-1 items-center justify-center bg-red-600 px-6 py-3 text-base font-bold text-white shadow-sm transition hover:bg-red-700" (click)="adicionarCarrinho()">
+          <i class="fa-solid fa-cart-plus mr-2"></i>
+          Comprar
+        </button>
+        <a href="vitrine" class="back-btn inline-flex items-center justify-center border border-zinc-300 bg-white text-zinc-700 transition hover:bg-zinc-100" aria-label="Voltar para a vitrine">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

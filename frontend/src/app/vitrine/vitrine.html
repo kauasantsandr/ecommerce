@@ -1,0 +1,151 @@
+<div *ngIf="lista.length<=0" class="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-800">
+  <strong>Vazio!</strong> não existem produtos na vitrine!
+</div>
+
+<div *ngIf="toastVisivel" class="toast-notification" role="status" aria-live="polite">
+  <div class="toast-icon">
+    <i class="fa-solid fa-check"></i>
+  </div>
+  <div>
+    <div class="toast-title">Produto adicionado</div>
+    <div class="toast-text">{{ toastMensagem }}</div>
+  </div>
+</div>
+
+<section *ngIf="lancamentos.length > 0" class="mb-10 px-4">
+  <div class="mx-auto max-w-6xl">
+    <div class="mb-5 flex items-center justify-between gap-3">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-red-600">Novidades</p>
+        <h3 class="text-2xl font-semibold text-zinc-800">Produtos novos e lançamentos</h3>
+      </div>
+    </div>
+
+    <div class="product-grid product-grid--compact">
+      <div class="product-card" *ngFor="let obj of lancamentos" (click)="verDetalhe(obj)" [attr.aria-label]="'Ver mais sobre ' + obj.nome">
+        <div class="product-card-badge" *ngIf="obj.valorPromo > 0">
+          <span>{{ ((1 - (obj.valorPromo / obj.valor)) * 100).toFixed(0) }}%</span>
+          <small>OFF</small>
+        </div>
+
+        <div class="product-image">
+          <img src="{{obj.codigo}}.jpg" alt="{{obj.nome}}" />
+        </div>
+
+        <div class="product-body">
+          <h4 class="product-title">{{obj.nome}}</h4>
+
+          <div class="price-stack" *ngIf="obj.valorPromo>0">
+            <div class="price-slab">
+              <span class="price-label">de</span>
+              <span class="old-price">{{ formatarMoeda(obj.valor) }}</span>
+            </div>
+            <div class="price-slab price-slab--main">
+              <span class="price-label">por</span>
+              <span class="new-price">{{ formatarMoeda(obj.valorPromo) }}</span>
+            </div>
+          </div>
+
+          <div class="price-stack" *ngIf="obj.valorPromo<=0">
+            <div class="price-slab price-slab--main">
+              <span class="price-label">à vista</span>
+              <span class="new-price">{{ formatarMoeda(obj.valor) }}</span>
+            </div>
+          </div>
+
+          <div class="pricing-info">
+            <div class="vista-line">
+              <span class="vista-tag">À vista</span>
+              <strong>{{ formatarMoeda(obj.valorPromo > 0 ? obj.valorPromo : obj.valor) }}</strong>
+            </div>
+            <div class="pix-line">15% de desconto no PIX</div>
+            <div class="parcelado-line">
+              <strong>{{ formatarMoeda((obj.valorPromo > 0 ? obj.valorPromo : obj.valor) / 8) }}</strong>
+              <span>em até 8x sem juros</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="px-4 pb-8">
+  <div class="mx-auto max-w-6xl">
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-red-600">Destaque</p>
+        <h3 class="text-2xl font-semibold text-zinc-800">Todos os produtos</h3>
+      </div>
+
+      <div class="relative">
+        <button type="button" class="filter-trigger flex items-center gap-2 rounded-xl border border-red-600 bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700" (click)="toggleFilterMenu()">
+          <i class="fa-solid fa-filter"></i>
+          <span>Filtros</span>
+        </button>
+
+        <div *ngIf="showFilterMenu" class="absolute right-0 top-12 z-20 w-52 overflow-hidden rounded-2xl border border-zinc-200 bg-white py-2 shadow-xl">
+          <button type="button" class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-zinc-700 transition hover:bg-red-50 hover:text-red-700" (click)="selecionarFiltro('recentes')">
+            <i class="fa-regular fa-clock"></i>
+            Adicionados recentemente
+          </button>
+          <button type="button" class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-zinc-700 transition hover:bg-red-50 hover:text-red-700" (click)="selecionarFiltro('az')">
+            <i class="fa-solid fa-arrow-down-a-z"></i>
+            A-Z
+          </button>
+          <button type="button" class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-zinc-700 transition hover:bg-red-50 hover:text-red-700" (click)="selecionarFiltro('preco')">
+            <i class="fa-solid fa-dollar-sign"></i>
+            Valor
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-grid">
+      <div class="product-card" *ngFor="let obj of listaOrdenada" (click)="verDetalhe(obj)" [attr.aria-label]="'Ver mais sobre ' + obj.nome">
+        <div class="product-card-badge" *ngIf="obj.valorPromo > 0">
+          <span>{{ ((1 - (obj.valorPromo / obj.valor)) * 100).toFixed(0) }}%</span>
+          <small>OFF</small>
+        </div>
+
+        <div class="product-image">
+          <img src="{{obj.codigo}}.jpg" alt="{{obj.nome}}" />
+        </div>
+
+        <div class="product-body">
+          <h4 class="product-title">{{obj.nome}}</h4>
+
+          <div class="price-stack" *ngIf="obj.valorPromo>0">
+            <div class="price-slab">
+              <span class="price-label">de</span>
+              <span class="old-price">{{ formatarMoeda(obj.valor) }}</span>
+            </div>
+            <div class="price-slab price-slab--main">
+              <span class="price-label">por</span>
+              <span class="new-price">{{ formatarMoeda(obj.valorPromo) }}</span>
+            </div>
+          </div>
+
+          <div class="price-stack" *ngIf="obj.valorPromo<=0">
+            <div class="price-slab price-slab--main">
+              <span class="price-label">à vista</span>
+              <span class="new-price">{{ formatarMoeda(obj.valor) }}</span>
+            </div>
+          </div>
+
+          <div class="pricing-info">
+            <div class="vista-line">
+              <span class="vista-tag">À vista</span>
+              <strong>{{ formatarMoeda(obj.valorPromo > 0 ? obj.valorPromo : obj.valor) }}</strong>
+            </div>
+            <div class="pix-line">15% de desconto no PIX</div>
+            <div class="parcelado-line">
+              <strong>{{ formatarMoeda((obj.valorPromo > 0 ? obj.valorPromo : obj.valor) / 8) }}</strong>
+              <span>em até 8x sem juros</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
